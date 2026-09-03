@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relevo Financiero</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#f4f5f8;
+    --surface:#ffffff;
+    --surface-2:#eceef3;
+    --ink:#1c2333;
+    --muted:#667085;
+    --line:#dde1ea;
+    --accent:#3355d8;
+    --accent-deep:#1f3a99;
+    --accent-soft:#e8ecfb;
+    --state-rejected:#b3261e;
+    --state-rejected-bg:#fbe7e5;
+    --state-pending:#b7791f;
+    --state-pending-bg:#fbf1de;
+    --state-notified:#0f766e;
+    --state-notified-bg:#e2f4f1;
+    --state-resolved:#2f855a;
+    --state-resolved-bg:#e5f3ea;
+    --shadow: 0 1px 2px rgba(28,35,51,0.04), 0 8px 24px -8px rgba(28,35,51,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme: dark;
+      --paper:#12151d;
+      --surface:#1a1e29;
+      --surface-2:#212635;
+      --ink:#e8eaf1;
+      --muted:#98a1b3;
+      --line:#2b3142;
+      --accent:#7b93f2;
+      --accent-deep:#aab9f7;
+      --accent-soft:#232a45;
+      --state-rejected:#f2938c;
+      --state-rejected-bg:#3a2020;
+      --state-pending:#e0b869;
+      --state-pending-bg:#3a3120;
+      --state-notified:#6fd0c5;
+      --state-notified-bg:#1b3733;
+      --state-resolved:#8fd6ab;
+      --state-resolved-bg:#1c3527;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Manrope", ui-sans-serif, system-ui, sans-serif;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  a{ color:var(--accent); }
+
+  .banner{
+    background:var(--accent-deep);
+    color:#fff;
+    text-align:center;
+    font-family:"Manrope", sans-serif;
+    font-weight:700;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:0.55rem 1rem;
+  }
+
+  .wrap{
+    max-width:960px;
+    margin:0 auto;
+    padding:2.75rem 1.5rem 5rem;
+    display:flex;
+    flex-direction:column;
+    gap:3rem;
+  }
+
+  header.intro{
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+  }
+  header.intro .eyebrow{
+    font-family:"Manrope", sans-serif;
+    font-weight:700;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  header.intro h1{
+    font-size:2.1rem;
+    font-weight:800;
+    margin:0;
+    color:var(--ink);
+  }
+  header.intro p{
+    margin:0;
+    max-width:62ch;
+    color:var(--muted);
+    font-size:1.02rem;
+  }
+
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+  }
+  @media (max-width:640px){ .compare{ grid-template-columns:1fr; } }
+  .compare .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1.1rem 1.2rem;
+    box-shadow:var(--shadow);
+  }
+  .compare .card h3{
+    margin:0 0 0.5rem;
+    font-size:0.95rem;
+    font-weight:700;
+  }
+  .compare .card p{
+    margin:0;
+    color:var(--muted);
+    font-size:0.9rem;
+  }
+  .compare .card.before h3{ color:var(--state-rejected); }
+  .compare .card.after h3{ color:var(--state-notified); }
+
+  section{ display:flex; flex-direction:column; gap:1.1rem; }
+  section > h2{
+    font-size:1.3rem;
+    font-weight:800;
+    margin:0;
+    display:flex;
+    align-items:baseline;
+    gap:0.6rem;
+  }
+  section > h2 .tag{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.68rem;
+    font-weight:500;
+    color:var(--muted);
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:0.15rem 0.5rem;
+    letter-spacing:0.02em;
+  }
+  section > .lede{
+    margin:-0.4rem 0 0;
+    color:var(--muted);
+    font-size:0.95rem;
+    max-width:68ch;
+  }
+
+  /* --- Forms mockup card --- */
+  .browser-chrome{
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .browser-chrome .chrome-bar{
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    padding:0.6rem 0.9rem;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+    font-size:0.75rem;
+    color:var(--muted);
+  }
+  .chrome-bar .dot{ width:8px; height:8px; border-radius:50%; background:var(--line); }
+  .chrome-bar .url{
+    font-family:"IBM Plex Mono", monospace;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:0.2rem 0.6rem;
+    flex:1;
+  }
+  .form-body{ padding:1.6rem 1.8rem 1.9rem; }
+  .form-body .form-title{
+    font-family:"Manrope", sans-serif;
+    font-weight:800;
+    font-size:1.15rem;
+    margin:0 0 0.2rem;
+  }
+  .form-body .form-sub{
+    color:var(--muted);
+    font-size:0.88rem;
+    margin:0 0 1.5rem;
+    padding-bottom:1.3rem;
+    border-bottom:3px solid var(--accent);
+  }
+  .field{ margin-bottom:1.25rem; }
+  .field label{
+    display:block;
+    font-weight:600;
+    font-size:0.92rem;
+    margin-bottom:0.4rem;
+  }
+  .field .req{ color:var(--state-rejected); margin-left:0.15rem; }
+  .field .hint{
+    display:block;
+    font-size:0.78rem;
+    color:var(--muted);
+    margin-top:0.3rem;
+  }
+  .field .hint.valid{ color:var(--state-resolved); font-weight:600; }
+  .field .hint.invalid{ color:var(--state-rejected); font-weight:600; }
+  #rut-input.valid{ border-bottom-color:var(--state-resolved); }
+  #rut-input.invalid{ border-bottom-color:var(--state-rejected); }
+  .fake-input, .fake-select{
+    width:100%;
+    border:1px solid var(--line);
+    border-bottom:2px solid var(--muted);
+    border-radius:5px;
+    padding:0.55rem 0.7rem;
+    font-family:inherit;
+    font-size:0.92rem;
+    color:var(--ink);
+    background:var(--surface);
+    appearance:none;
+  }
+  .fake-textarea{
+    width:100%;
+    min-height:4.5rem;
+    border:1px solid var(--line);
+    border-bottom:2px solid var(--muted);
+    border-radius:5px;
+    padding:0.6rem 0.7rem;
+    background:var(--surface);
+    color:var(--muted);
+    font-family:inherit;
+    font-size:0.88rem;
+  }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media (max-width:560px){ .row2{ grid-template-columns:1fr; } }
+  .auto-suggest{
+    margin-top:0.5rem;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    background:var(--accent-soft);
+    border:1px dashed var(--accent);
+    border-radius:6px;
+    padding:0.5rem 0.7rem;
+    font-size:0.82rem;
+    color:var(--accent-deep);
+  }
+  .submit-row{
+    display:flex;
+    align-items:center;
+    gap:0.9rem;
+    margin-top:1.6rem;
+  }
+  .btn-submit{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:0.65rem 1.5rem;
+    font-family:"Manrope", sans-serif;
+    font-weight:700;
+    font-size:0.92rem;
+  }
+  .submit-row .note{ font-size:0.8rem; color:var(--muted); }
+
+  /* --- flow diagram --- */
+  .diagram-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1.4rem 1.2rem;
+    box-shadow:var(--shadow);
+    overflow-x:auto;
+  }
+  .mermaid-diagram{margin-block:4px}
+  .mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+  /* --- schema tables --- */
+  .schemas{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.2rem;
+  }
+  @media (max-width:720px){ .schemas{ grid-template-columns:1fr; } }
+  .schema-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .schema-card .schema-head{
+    padding:0.9rem 1.1rem;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  .schema-head .name{
+    font-weight:700;
+    font-size:0.95rem;
+  }
+  .schema-head .kind{
+    display:block;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    color:var(--muted);
+    margin-top:0.15rem;
+  }
+  .table-scroll{ overflow-x:auto; }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.82rem;
+  }
+  th{
+    text-align:left;
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:500;
+    font-size:0.72rem;
+    letter-spacing:0.02em;
+    color:var(--muted);
+    text-transform:uppercase;
+    padding:0.55rem 0.8rem;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  td{
+    padding:0.6rem 0.8rem;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  tr:last-child td{ border-bottom:none; }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    font-size:0.74rem;
+    font-weight:600;
+    padding:0.2rem 0.55rem;
+    border-radius:999px;
+  }
+  .pill.pending{ color:var(--state-pending); background:var(--state-pending-bg); }
+  .pill.notified{ color:var(--state-notified); background:var(--state-notified-bg); }
+  .pill.resolved{ color:var(--state-resolved); background:var(--state-resolved-bg); }
+  .pill::before{
+    content:"";
+    width:6px; height:6px; border-radius:50%;
+    background:currentColor;
+  }
+  .placeholder-note{
+    font-size:0.78rem;
+    color:var(--muted);
+    font-style:italic;
+    padding:0.7rem 1.1rem;
+    border-top:1px dashed var(--line);
+  }
+
+  footer.next{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1.5rem 1.6rem;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:0.7rem;
+  }
+  footer.next h3{
+    margin:0;
+    font-size:1.05rem;
+    font-weight:800;
+  }
+  footer.next ol{
+    margin:0;
+    padding-left:1.2rem;
+    color:var(--muted);
+    font-size:0.92rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.35rem;
+  }
+  footer.next ol strong{ color:var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="banner">Propuesta de solución · Datos ilustrativos</div>
+
+<div class="wrap">
+
+  <header class="intro">
+    <span class="eyebrow">Relevo Financiero · Americar</span>
+    <h1>Cuando la primera opción de financiamiento rechaza, la segunda no debería depender de un WhatsApp.</h1>
+    <p><strong>Relevo Financiero</strong> sistematiza la derivación a la segunda opción de financiamiento: un formulario simple, notificación automática al responsable correcto por sucursal y financiera, y un registro histórico de cada caso. Se construye sobre Microsoft Forms, SharePoint y Power Automate, sin necesidad de integrarse directamente con las financieras.</p>
+  </header>
+
+  <div class="compare">
+    <div class="card before">
+      <h3>Hoy</h3>
+      <p>El ejecutivo escribe por WhatsApp al colega de la segunda financiera. Si no está disponible o se traspapela el mensaje, la oportunidad se pierde sin quedar registrada en ningún lado.</p>
+    </div>
+    <div class="card after">
+      <h3>Propuesto</h3>
+      <p>El ejecutivo llena un formulario. El sistema identifica al responsable de la sucursal y financiera correcta, y le notifica automáticamente. Todo queda registrado.</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>Formulario <span class="tag">Microsoft Forms</span></h2>
+    <p class="lede">Lo llena el ejecutivo apenas la primera financiera rechaza al cliente. Los campos marcados con * son obligatorios para poder notificar.</p>
+
+    <div class="browser-chrome">
+      <div class="chrome-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">forms.office.com/…/relevo-financiero</span>
+      </div>
+      <div class="form-body">
+        <p class="form-title">Relevo Financiero</p>
+        <p class="form-sub">Complete este formulario apenas la primera financiera rechace la solicitud del cliente.</p>
+
+        <div class="row2">
+          <div class="field">
+            <label>Sucursal<span class="req">*</span></label>
+            <select class="fake-select">
+              <option value="">— Seleccionar —</option>
+              <option>Autopark Departamental 4500 (728)</option>
+              <option>Carshopping A. Vespucio 2451 (735)</option>
+              <option>Cerrillos Pedro A. Cerda 6697 (719)</option>
+              <option>Chillan Av Brasil 80 (746)</option>
+              <option>Chillan Ecuador 768 (137)</option>
+              <option>Chillán Ecuador 330 (132)</option>
+              <option>Clínica J. Alessandri R. 2121 (160)</option>
+              <option>Concepcion C. Colon 8961 (9015)</option>
+              <option>Concepcion J. Alessandri R. 1885 (117U)</option>
+              <option>Concepcion Paicaví 2592 (102)</option>
+              <option>La Dehesa J. A. Delano 11021 (9010)</option>
+              <option>La Florida Vicuña Mackenna 8603 (9019)</option>
+              <option>Las Animas P. A. Cerda 410 (842)</option>
+              <option>Las Reina Av. Fco. Bilbao 5593 (9008)</option>
+              <option>Linares Leon Bustos 0239 (162)</option>
+              <option>Los Angeles Av. Alemania 410 (9003)</option>
+              <option>Los Angeles Industrias 7730 (146)</option>
+              <option>Los Cobres Vitacura 6875 (892)</option>
+              <option>Maipú Av. Pajaritos 2557 (9031)</option>
+              <option>Movicenter A. Vespucio 1155 (707)</option>
+              <option>Osorno Andres Bello 663 (9022)</option>
+              <option>Osorno Juan Mackenna 1659 (9024)</option>
+              <option>Puerto Montt Benavente 753 (9030)</option>
+              <option>Puerto Montt Regimiento 861 (9027)</option>
+              <option>Puerto Montt Serrano 328 (9012)</option>
+              <option>San Bdo. Av. Portales 3698 (9028)</option>
+              <option>San Felipe Chacabuco 109 (701U)</option>
+              <option>San Felipe Chacabuco 255 (9016)</option>
+              <option>San Miguel Gran Av. José Miguel Carrera 6197 (9006)</option>
+              <option>Talca 11 Oriente 1180 (165)</option>
+              <option>Talca San Miguel 2790 (167)</option>
+              <option>Temuco Alemania 501 (185)</option>
+              <option>Temuco Caupolicán 693 (9011)</option>
+              <option>Temuco Hochstetter 976 (190)</option>
+              <option>Temuco Tolosa Caupolicán 1490 (180)</option>
+              <option>Valdivia Av. R Picarte 2240 (194)</option>
+              <option>Vega 21 de Mayo 3225 (114)</option>
+              <option>Vitacura 5555 (9004)</option>
+              <option>Vitacura Padre Hurtado Nte 1246 (9005)</option>
+              <option>Vitacura Vitacura 7649 (767)</option>
+              <option>Viña del Mar Limache 3677 (9002)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ejecutivo que reporta<span class="req">*</span></label>
+            <input class="fake-input" placeholder="Nombre del ejecutivo" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Nombre del cliente<span class="req">*</span></label>
+            <input class="fake-input" placeholder="Ej: Juan Pérez" />
+          </div>
+          <div class="field">
+            <label>RUT del cliente<span class="req">*</span></label>
+            <input class="fake-input mono" id="rut-input" placeholder="12.345.678-5" maxlength="12" autocomplete="off" />
+            <span class="hint" id="rut-status">Se muestra con puntos para facilitar la lectura; el dígito verificador se valida con Módulo 11.</span>
+            <span class="hint mono" id="rut-clean"></span>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Marca del vehículo<span class="req">*</span></label>
+            <select class="fake-select" id="marca-select">
+              <option value="">— Seleccionar —</option>
+              <option>Acura</option>
+              <option>Alfa romeo</option>
+              <option>Aston martin</option>
+              <option>Audi</option>
+              <option>Austin</option>
+              <option>Baic</option>
+              <option>Bentley</option>
+              <option>Bmw</option>
+              <option>Brilliance</option>
+              <option>Buick</option>
+              <option>Byd</option>
+              <option>Cadillac</option>
+              <option>Changan</option>
+              <option>Chery</option>
+              <option>Chevrolet</option>
+              <option>Chrysler</option>
+              <option>Citroën</option>
+              <option>Cupra</option>
+              <option>Daewoo</option>
+              <option>Daihatsu</option>
+              <option>Dfm</option>
+              <option>Dfsk</option>
+              <option>Dodge</option>
+              <option>Dongfeng</option>
+              <option>Exeed</option>
+              <option>Faw</option>
+              <option>Ferrari</option>
+              <option>Fiat</option>
+              <option>Ford</option>
+              <option>Foton</option>
+              <option>Gac</option>
+              <option>Geely</option>
+              <option>Gmc</option>
+              <option>Great wall</option>
+              <option>Hafei</option>
+              <option>Haima</option>
+              <option>Haval</option>
+              <option>Hino</option>
+              <option>Honda</option>
+              <option>Hyundai</option>
+              <option>Infiniti</option>
+              <option>International</option>
+              <option>Isuzu</option>
+              <option>Iveco</option>
+              <option>Jac</option>
+              <option>Jaecoo</option>
+              <option>Jaguar</option>
+              <option>Jeep</option>
+              <option>Jetour</option>
+              <option>Jim</option>
+              <option>Jinbei</option>
+              <option>Jmc</option>
+              <option>Kaiyi</option>
+              <option>Karry</option>
+              <option>Kia</option>
+              <option>Kyc</option>
+              <option>Lada</option>
+              <option>Land rover</option>
+              <option>Leapmotor</option>
+              <option>Lexus</option>
+              <option>Lifan</option>
+              <option>Lotus</option>
+              <option>Mahindra</option>
+              <option>Maple</option>
+              <option>Maserati</option>
+              <option>Maxus</option>
+              <option>Mazda</option>
+              <option>Mercedes benz</option>
+              <option>Mg</option>
+              <option>Mini</option>
+              <option>Mitsubishi</option>
+              <option>Morini</option>
+              <option>Nissan</option>
+              <option>Omoda</option>
+              <option>Opel</option>
+              <option>Peugeot</option>
+              <option>Pontiac</option>
+              <option>Porsche</option>
+              <option>Proton</option>
+              <option>Ram</option>
+              <option>Renault</option>
+              <option>Rover</option>
+              <option>Saab</option>
+              <option>Samsung</option>
+              <option>Seat</option>
+              <option>Shineray</option>
+              <option>Skoda</option>
+              <option>Smart</option>
+              <option>Soueast</option>
+              <option>Ssangyong</option>
+              <option>Subaru</option>
+              <option>Suzuki</option>
+              <option>Swm</option>
+              <option>Tata</option>
+              <option>Tesla</option>
+              <option>Toyota</option>
+              <option>Uaz</option>
+              <option>Volkswagen</option>
+              <option>Volvo</option>
+              <option>Zna</option>
+              <option>Zotye</option>
+              <option>Zx autos</option>
+            </select>
+            <input type="hidden" id="marca-codigo" />
+          </div>
+          <div class="field">
+            <label>Modelo del vehículo<span class="req">*</span></label>
+            <input class="fake-input" placeholder="Ej: Tunland" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Financiera 1ª opción (rechazó)<span class="req">*</span></label>
+            <select class="fake-select"><option>Finex</option></select>
+          </div>
+          <div class="field">
+            <label>Motivo de rechazo</label>
+            <select class="fake-select"><option>Score / DICOM</option></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Financiera 2ª opción sugerida<span class="req">*</span></label>
+          <select class="fake-select"><option>Amicar</option></select>
+          <div class="auto-suggest">↳ Sugerida según la marca del vehículo y la regla de la sucursal. El ejecutivo puede cambiarla.</div>
+        </div>
+
+        <div class="field">
+          <label>Comentario adicional</label>
+          <textarea class="fake-textarea" placeholder="Contexto útil para quien reciba el caso…"></textarea>
+        </div>
+
+        <div class="submit-row">
+          <button class="btn-submit">Enviar y notificar</button>
+          <span class="note">Al enviar, se crea el caso y se notifica automáticamente al responsable.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Flujo de notificación <span class="tag">Power Automate</span></h2>
+    <p class="lede">Qué pasa entre que el ejecutivo aprieta "Enviar" y que el responsable de la segunda opción recibe el caso.</p>
+    <div class="diagram-card">
+      <pre class="mermaid">
+flowchart LR
+    A["Ejecutivo llena\nel formulario"] --> B["Se crea el registro\nen la lista 'Casos Relevo Financiero'"]
+    B --> C["Power Automate busca\nSucursal + Financiera 2\nen 'Maestro Responsables'"]
+    C --> D["Notifica al responsable\npor Teams / Outlook"]
+    D --> E["Responsable contacta\nal cliente"]
+    E --> F["Responsable actualiza\nel Estado del caso"]
+      </pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>Estructura de datos <span class="tag">Listas de SharePoint</span></h2>
+    <p class="lede">Dos listas: una maestra con los responsables por sucursal y financiera, y una transaccional que se va llenando con cada caso. Los datos abajo son ilustrativos.</p>
+
+    <div class="schemas">
+      <div class="schema-card">
+        <div class="schema-head">
+          <span class="name">Maestro Responsables</span>
+          <span class="kind mono">lista de referencia · mantenida a mano</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Sucursal</th><th>Financiera</th><th>Responsable</th><th>Correo</th></tr></thead>
+            <tbody>
+              <tr><td>Americar Providencia</td><td>Amicar</td><td>M. Fuentes</td><td class="mono">mfuentes@…</td></tr>
+              <tr><td>Americar Providencia</td><td>Global</td><td>P. Rivas</td><td class="mono">privas@…</td></tr>
+              <tr><td>Portillo San Bernardo</td><td>Forum</td><td>C. Araya</td><td class="mono">caraya@…</td></tr>
+              <tr><td>Coseche Temuco</td><td>Amicar</td><td>J. Salas</td><td class="mono">jsalas@…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="placeholder-note">Se completa una vez con los responsables de cada sucursal; después solo se actualiza cuando cambia una persona.</p>
+      </div>
+
+      <div class="schema-card">
+        <div class="schema-head">
+          <span class="name">Casos Relevo Financiero</span>
+          <span class="kind mono">se llena con cada envío del formulario</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Fecha</th><th>Cliente</th><th>Financiera 2</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>21-08</td><td>J. Pérez</td><td>Amicar</td><td><span class="pill pending">Pendiente</span></td></tr>
+              <tr><td>21-08</td><td>R. Soto</td><td>Global</td><td><span class="pill notified">Notificado</span></td></tr>
+              <tr><td>20-08</td><td>A. Muñoz</td><td>Forum</td><td><span class="pill resolved">Resuelto</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="placeholder-note">Con el tiempo, esta lista es la base para medir cuántos rechazos se recuperan en la segunda opción.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="next">
+    <h3>Próximos pasos</h3>
+    <ol>
+      <li><strong>Validar los campos del formulario</strong> y definir si el motivo de rechazo debe ser obligatorio.</li>
+      <li><strong>Confirmar la regla de sugerencia de financiera 2ª opción</strong> por marca — incluyendo casos especiales como el bono con 90% de pie en Global.</li>
+      <li><strong>Completar el Maestro de Responsables</strong> por sucursal y financiera — es el dato que falta para poder notificar a la persona correcta.</li>
+      <li><strong>Construir la versión productiva</strong> en Microsoft Forms + SharePoint + Power Automate, sin tocar el flujo de renovaciones.</li>
+    </ol>
+  </footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+    securityLevel: 'loose'
+  });
+</script>
+
+<script>
+(function(){
+  var CODIGOS_MARCA = {"acura": ["2"], "alfa romeo": ["3"], "aston martin": ["7"], "audi": ["8"], "austin": ["9"], "baic": ["277"], "bentley": ["269"], "bmw": ["12"], "brilliance": ["260"], "buick": ["13"], "byd": ["14"], "cadillac": ["15"], "changan": ["16"], "chery": ["17"], "chevrolet": ["18"], "chrysler": ["19"], "citroën": ["20"], "cupra": ["312"], "daewoo": ["23"], "daihatsu": ["24"], "dfm": ["288"], "dfsk": ["287", "DFS"], "dodge": ["26"], "dongfeng": ["27"], "exeed": ["96"], "faw": ["275"], "ferrari": ["29"], "fiat": ["30"], "ford": ["31"], "foton": ["32"], "gac": ["273"], "geely": ["34"], "gmc": ["33"], "great wall": ["35"], "hafei": ["36"], "haima": ["37"], "haval": ["290"], "hino": ["296"], "honda": ["21", "39"], "hyundai": ["10", "40"], "infiniti": ["189"], "international": ["41"], "isuzu": ["42"], "iveco": ["280"], "jac": ["43"], "jaecoo": ["322"], "jaguar": ["44"], "jeep": ["45"], "jetour": ["311"], "jim": ["83"], "jinbei": ["266"], "jmc": ["46"], "kaiyi": ["98"], "karry": ["310"], "kia": ["47"], "kyc": ["305"], "lada": ["48"], "land rover": ["50"], "leapmotor": ["324", "LPM"], "lexus": ["51"], "lifan": ["52", "65"], "lotus": ["54"], "mahindra": ["55"], "maple": ["320"], "maserati": ["56"], "maxus": ["283"], "mazda": ["25", "57"], "mercedes benz": ["28", "58"], "mg": ["60"], "mini": ["53", "61"], "mitsubishi": ["62"], "morini": ["MOR"], "nissan": ["64"], "omoda": ["321"], "opel": ["38", "67"], "peugeot": ["68"], "pontiac": ["71"], "porsche": ["22", "72"], "proton": ["73"], "ram": ["304", "59"], "renault": ["75"], "rover": ["76"], "saab": ["77"], "samsung": ["79"], "seat": ["80"], "shineray": ["101", "SHI"], "skoda": ["82"], "smart": ["188"], "soueast": ["298"], "ssangyong": ["84"], "subaru": ["85"], "suzuki": ["86"], "swm": ["297"], "tata": ["87"], "tesla": ["323", "TE"], "toyota": ["88"], "uaz": ["313", "316"], "volkswagen": ["89"], "volvo": ["90"], "zna": ["272"], "zotye": ["94"], "zx autos": ["95"]};
+
+  var marcaSelect = document.getElementById('marca-select');
+  var marcaCodigo = document.getElementById('marca-codigo');
+
+  if(marcaSelect && marcaCodigo){
+    marcaSelect.addEventListener('change', function(e){
+      var marca = e.target.value.trim().toLowerCase();
+      var codigos = CODIGOS_MARCA[marca];
+      marcaCodigo.value = codigos ? codigos.join('/') : '';
+    });
+  }
+
+  var input = document.getElementById('rut-input');
+  var status = document.getElementById('rut-status');
+  var clean = document.getElementById('rut-clean');
+  var baseHint = 'Se muestra con puntos para facilitar la lectura; el dígito verificador se valida con Módulo 11.';
+  if(!input) return;
+
+  function limpiarRUT(valor){
+    return valor.replace(/[^0-9kK]/g, '').toUpperCase();
+  }
+
+  function conPuntos(cuerpo){
+    return cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function calcularDV(cuerpo){
+    var factores = [2,3,4,5,6,7];
+    var suma = 0;
+    for(var i = 0; i < cuerpo.length; i++){
+      var digito = parseInt(cuerpo.charAt(cuerpo.length - 1 - i), 10);
+      suma += digito * factores[i % factores.length];
+    }
+    var resto = suma % 11;
+    var resultado = 11 - resto;
+    if(resultado === 11) return '0';
+    if(resultado === 10) return 'K';
+    return String(resultado);
+  }
+
+  input.addEventListener('input', function(e){
+    var limpio = limpiarRUT(e.target.value);
+    var cuerpo = limpio.slice(0, -1);
+    var dvIngresado = limpio.slice(-1);
+
+    var formateado = limpio.length > 1 ? conPuntos(cuerpo) + '-' + dvIngresado : limpio;
+    e.target.value = formateado;
+    e.target.setSelectionRange(formateado.length, formateado.length);
+
+    input.classList.remove('valid', 'invalid');
+    status.classList.remove('valid', 'invalid');
+
+    if(limpio.length === 0){
+      status.textContent = baseHint;
+      clean.textContent = '';
+      return;
+    }
+
+    clean.textContent = 'Se registra sin puntos: ' + cuerpo + (dvIngresado ? '-' + dvIngresado : '');
+
+    if(cuerpo.length < 7){
+      status.textContent = baseHint;
+      return;
+    }
+
+    var dvEsperado = calcularDV(cuerpo);
+    if(dvIngresado === dvEsperado){
+      input.classList.add('valid');
+      status.classList.add('valid');
+      status.textContent = 'RUT válido.';
+    } else {
+      input.classList.add('invalid');
+      status.classList.add('invalid');
+      status.textContent = 'El dígito verificador no coincide (Módulo 11 esperaba ' + dvEsperado + ').';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
