@@ -24,8 +24,8 @@ Formulario + notificación + registro, sobre stack Microsoft 365:
   responsable apenas se crea un caso nuevo.
 
 **Estado actual:** mockup visual y funcional (validación de campos y lógica) publicado
-como Artifact — ver [Estado y próximos pasos](#estado-y-próximos-pasos). Pendiente
-construir la versión productiva.
+como Artifact — [ver mockup](https://claude.ai/code/artifact/893455e8-0468-41be-829c-6a301ed84c4b).
+Pendiente construir la versión productiva (ver [Estado y próximos pasos](#estado-y-próximos-pasos)).
 
 ## Datos de entrada (formulario)
 
