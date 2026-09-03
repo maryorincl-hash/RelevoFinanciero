@@ -1,0 +1,31 @@
+marca,codigo,fecha_creacion,creado_por,inactivo
+Dfsk,287,2023-07-27,Supervisor,No
+Dfsk,DFS,2026-03-18,Supervisor,No
+Honda,39,2023-07-27,Supervisor,No
+Honda,21,2024-02-27,Daniel Abarca Medina,No
+Hyundai,40,2023-07-27,Supervisor,No
+Hyundai,10,2024-02-27,Daniel Abarca Medina,No
+Leapmotor,LPM,2026-07-01,Supervisor,No
+Leapmotor,324,2026-07-03,Supervisor,No
+Lifan,52,2023-07-27,Supervisor,No
+Lifan,65,2024-02-27,Daniel Abarca Medina,No
+Mazda,57,2023-07-27,Supervisor,No
+MAZDA,25,2024-02-27,Daniel Abarca Medina,No
+Mercedes Benz,58,2023-07-27,Supervisor,No
+Mercedes Benz,28,2024-02-27,Daniel Abarca Medina,No
+MINI,61,2023-07-27,Supervisor,No
+MINI,53,2024-02-27,Daniel Abarca Medina,No
+Opel,67,2023-07-27,Supervisor,No
+Opel,38,2024-02-27,Daniel Abarca Medina,No
+Porsche,72,2023-07-27,Supervisor,No
+PORSCHE,22,2024-02-27,Daniel Abarca Medina,No
+Porsche,72,2025-12-30,Maryorin Vivas Macedo,No
+Porsche,72,2025-12-31,Maryorin Vivas Macedo,No
+Ram,304,2023-07-27,Supervisor,No
+RAM,59,2024-02-27,Daniel Abarca Medina,No
+Shineray,SHI,2026-04-03,Supervisor,No
+Shineray,101,2026-04-06,Supervisor,No
+Tesla,323,2026-07-01,Supervisor,No
+Tesla,TE,2026-07-01,Supervisor,No
+Uaz,313,2023-07-27,Supervisor,No
+Uaz,316,2023-07-27,Supervisor,No
